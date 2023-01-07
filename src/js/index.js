@@ -4,6 +4,8 @@ const size = 48;
 const speed = 3;
 
 const canvas = document.getElementById("js-canvas");
+const textDiv = document.querySelector(".js-final-text-thumb");
+let text = document.querySelector(".js-final-text");
 const ctx = canvas.getContext("2d");
 const map = new Map(size);
 const pacman = map.getPacman(speed);
@@ -40,18 +42,13 @@ function checkGameWin() {
 }
 
 function drawGameEnd() {
-  if (gameOver || gameWin) {
-    let text = " You Win!";
-    if (gameOver) {
-      text = "Game Over";
+  if (!gameOver || gameWin) {
+    text.innerText = " You Win!";
+    if (!gameOver) {
+      text.innerText = "Game Over";
     }
 
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, canvas.height / 3.2, canvas.width, 160);
-
-    ctx.font = "130px comic sans";
-    ctx.fillStyle = "white";
-    ctx.fillText(text, 10, canvas.height / 1.8);
+    textDiv.classList.remove("hidden");
   }
 }
 
