@@ -14,6 +14,14 @@ export default class Pacman {
     this.animationTimerDefault = 10;
     this.animationTimer = null;
 
+    this.rotation = {
+      right: 0,
+      down: 1,
+      left: 2,
+      up: 3,
+    };
+    this.pacmanRotation = this.rotation.right;
+
     this.pacmanClosed = new Image();
     this.pacmanClosed.src = "../../images/pac0.png";
 
@@ -29,7 +37,6 @@ export default class Pacman {
       this.pacmanOpened,
       this.pacmanNormal,
     ];
-
     this.arrayOfPacmanImagesIndex = 0;
 
     document.addEventListener("keydown", this.#onKeyDown);
@@ -38,13 +45,21 @@ export default class Pacman {
   draw(ctx) {
     this.#move();
     this.#animate();
+
+    const size = this.size / 2;
+
+    ctx.save();
+    ctx.translate(this.x + size, this.y + size);
+    ctx.rotate((this.pacmanRotation * 90 * Math.PI) / 180);
     ctx.drawImage(
       this.arrayOfPacmanImages[this.arrayOfPacmanImagesIndex],
-      this.x,
-      this.y,
+      -size,
+      -size,
       this.size,
       this.size
     );
+
+    ctx.restore();
   }
 
   #onKeyDown = (event) => {
@@ -93,15 +108,19 @@ export default class Pacman {
     switch (this.currentDirection) {
       case directions.up:
         this.y -= this.speed;
-        break;
-      case directions.down:
-        this.y += this.speed;
-        break;
-      case directions.left:
-        this.x -= this.speed;
+        this.pacmanRotation = this.rotation.up;
         break;
       case directions.right:
         this.x += this.speed;
+        this.pacmanRotation = this.rotation.right;
+        break;
+      case directions.down:
+        this.y += this.speed;
+        this.pacmanRotation = this.rotation.down;
+        break;
+      case directions.left:
+        this.x -= this.speed;
+        this.pacmanRotation = this.rotation.left;
         break;
     }
   }
