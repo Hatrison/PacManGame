@@ -7,13 +7,13 @@ export default class Map {
     this.size = size;
 
     this.yellowDot = new Image();
-    this.yellowDot.src = "../../images/yellowDot.png";
+    this.yellowDot.src = "images/yellowDot.png";
 
     this.pinkDot = new Image();
-    this.pinkDot.src = "../../images/pinkDot.png";
+    this.pinkDot.src = "images/pinkDot.png";
 
     this.wall = new Image();
-    this.wall.src = "../../images/wall.png";
+    this.wall.src = "images/wall.png";
 
     this.powerDot = this.pinkDot;
     this.powerDotAnimationTimerDefault = 30;

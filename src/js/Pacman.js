@@ -23,13 +23,13 @@ export default class Pacman {
     this.pacmanRotation = this.rotation.right;
 
     this.pacmanClosed = new Image();
-    this.pacmanClosed.src = "../../images/pac0.png";
+    this.pacmanClosed.src = "images/pac0.png";
 
     this.pacmanNormal = new Image();
-    this.pacmanNormal.src = "../../images/pac1.png";
+    this.pacmanNormal.src = "images/pac1.png";
 
     this.pacmanOpened = new Image();
-    this.pacmanOpened.src = "../../images/pac2.png";
+    this.pacmanOpened.src = "images/pac2.png";
 
     this.arrayOfPacmanImages = [
       this.pacmanClosed,
