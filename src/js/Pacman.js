@@ -44,11 +44,12 @@ export default class Pacman {
     document.addEventListener("keydown", this.#onKeyDown);
   }
 
-  draw(ctx) {
+  draw(ctx, enemies) {
     this.#move();
     this.#animate();
     this.map.eatDot(this.x, this.y);
     this.#eatPowerDot();
+    this.#eatGhost(enemies);
 
     const size = this.size / 2;
 
@@ -165,6 +166,17 @@ export default class Pacman {
       }, 3000);
 
       this.timers.push(powerDotExpirationTimer);
+    }
+  }
+
+  #eatGhost(enemies) {
+    if (this.powerDotActive) {
+      const enemiesCollided = enemies.filter((enemy) =>
+        enemy.isCollision(this)
+      );
+      enemiesCollided.forEach((enemy) =>
+        enemies.splice(enemies.indexOf(enemy), 1)
+      );
     }
   }
 }
