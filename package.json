@@ -1,0 +1,22 @@
+{
+  "name": "pacmangame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hatrison/PacManGame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hatrison/PacManGame/issues"
+  },
+  "homepage": "https://github.com/Hatrison/PacManGame#readme",
+  "dependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
