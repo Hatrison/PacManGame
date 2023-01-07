@@ -1,3 +1,5 @@
+import Pacman from "./Pacman.js";
+
 export default class Map {
   constructor(size) {
     this.size = size;
@@ -59,5 +61,23 @@ export default class Map {
       this.size,
       this.size
     );
+  }
+
+  getPacman(speed) {
+    for (let row = 0; row < this.map.length; row++) {
+      for (let column = 0; column < this.map[row].length; column++) {
+        const block = this.map[row][column];
+        if (block === 3) {
+          this.map[row][column] = 1;
+          return new Pacman(
+            column * this.size,
+            row * this.size,
+            this.size,
+            speed,
+            this
+          );
+        }
+      }
+    }
   }
 }
