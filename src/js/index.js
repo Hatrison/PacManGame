@@ -42,9 +42,9 @@ function checkGameWin() {
 }
 
 function drawGameEnd() {
-  if (!gameOver || gameWin) {
+  if (gameOver || gameWin) {
     text.innerText = " You Win!";
-    if (!gameOver) {
+    if (gameOver) {
       text.innerText = "Game Over";
     }
 
