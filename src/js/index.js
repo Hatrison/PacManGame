@@ -49,9 +49,9 @@ function drawGameEnd() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, canvas.height / 3.2, canvas.width, 160);
 
-    ctx.font = "160px comic sans";
+    ctx.font = "130px comic sans";
     ctx.fillStyle = "white";
-    ctx.fillText(text, 10, canvas.height / 2);
+    ctx.fillText(text, 10, canvas.height / 1.8);
   }
 }
 
