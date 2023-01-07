@@ -11,6 +11,9 @@ export default class Pacman {
     this.currenDirection = null;
     this.requestedDirection = null;
 
+    this.animationTimerDefault = 10;
+    this.animationTimer = null;
+
     this.pacmanClosed = new Image();
     this.pacmanClosed.src = "../../images/pac0.png";
 
@@ -34,6 +37,7 @@ export default class Pacman {
 
   draw(ctx) {
     this.#move();
+    this.#animate();
     ctx.drawImage(
       this.arrayOfPacmanImages[this.arrayOfPacmanImagesIndex],
       this.x,
@@ -79,7 +83,11 @@ export default class Pacman {
     }
 
     if (this.map.isCollision(this.x, this.y, this.currentDirection)) {
+      this.animationTimer = null;
+      this.arrayOfPacmanImagesIndex = 1;
       return;
+    } else if (this.currentDirection !== null && this.animationTimer === null) {
+      this.animationTimer = this.animationTimerDefault;
     }
 
     switch (this.currentDirection) {
@@ -95,6 +103,19 @@ export default class Pacman {
       case directions.right:
         this.x += this.speed;
         break;
+    }
+  }
+
+  #animate() {
+    if (this.animationTimer === null) {
+      return;
+    }
+    this.animationTimer--;
+    if (this.animationTimer === 0) {
+      this.animationTimer = this.animationTimerDefault;
+      this.arrayOfPacmanImagesIndex++;
+      if (this.arrayOfPacmanImagesIndex === this.arrayOfPacmanImages.length)
+        this.arrayOfPacmanImagesIndex = 0;
     }
   }
 }
