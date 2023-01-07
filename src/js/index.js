@@ -1,7 +1,7 @@
 import Map from "./Map.js";
 
-const size = 64;
-const speed = 4;
+const size = 48;
+const speed = 3;
 
 const canvas = document.getElementById("js-canvas");
 const ctx = canvas.getContext("2d");
