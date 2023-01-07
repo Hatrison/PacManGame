@@ -45,6 +45,7 @@ export default class Pacman {
   draw(ctx) {
     this.#move();
     this.#animate();
+    this.map.eatDot(this.x, this.y);
 
     const size = this.size / 2;
 

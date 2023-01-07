@@ -40,11 +40,9 @@ export default class Map {
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
         const block = this.map[row][column];
-        if (block === 0) {
-          this.#drawBlock(ctx, this.wall, column, row);
-        } else if (block === 1) {
-          this.#drawBlock(ctx, this.yellowDot, column, row);
-        }
+        if (block === 0) this.#drawBlock(ctx, this.wall, column, row);
+        else if (block === 1) this.#drawBlock(ctx, this.yellowDot, column, row);
+        else if (block === 5) this.#drawEmptySpace(ctx, column, row);
       }
     }
   }
@@ -62,6 +60,11 @@ export default class Map {
       this.size,
       this.size
     );
+  }
+
+  #drawEmptySpace(ctx, column, row) {
+    ctx.fillStyle = "black";
+    ctx.fillRect(column * this.size, row * this.size, this.size, this.size);
   }
 
   getPacman(speed) {
@@ -117,6 +120,18 @@ export default class Map {
       }
       const block = this.map[row][column];
       if (block === 0) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  eatDot(x, y) {
+    const row = y / this.size;
+    const column = x / this.size;
+    if (Number.isInteger(row) && Number.isInteger(column)) {
+      if (this.map[row][column] === 1) {
+        this.map[row][column] = 5;
         return true;
       }
     }
