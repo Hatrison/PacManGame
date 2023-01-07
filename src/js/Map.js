@@ -1,4 +1,5 @@
 import Pacman from "./Pacman.js";
+import directions from "./directions.js";
 
 export default class Map {
   constructor(size) {
@@ -79,5 +80,46 @@ export default class Map {
         }
       }
     }
+  }
+
+  isCollision(x, y, direction) {
+    if (direction === null) {
+      return;
+    }
+
+    if (Number.isInteger(x / this.size) && Number.isInteger(y / this.size)) {
+      let column = 0;
+      let row = 0;
+      let nextColumn = 0;
+      let nextRow = 0;
+
+      switch (direction) {
+        case directions.up:
+          nextRow = y - this.size;
+          row = nextRow / this.size;
+          column = x / this.size;
+          break;
+        case directions.right:
+          nextColumn = x + this.size;
+          column = nextColumn / this.size;
+          row = y / this.size;
+          break;
+        case directions.down:
+          nextRow = y + this.size;
+          row = nextRow / this.size;
+          column = x / this.size;
+          break;
+        case directions.left:
+          nextColumn = x - this.size;
+          column = nextColumn / this.size;
+          row = y / this.size;
+          break;
+      }
+      const block = this.map[row][column];
+      if (block === 0) {
+        return true;
+      }
+    }
+    return false;
   }
 }
