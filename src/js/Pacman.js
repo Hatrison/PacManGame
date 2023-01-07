@@ -48,6 +48,7 @@ export default class Pacman {
     this.#move();
     this.#animate();
     this.map.eatDot(this.x, this.y);
+    this.#eatPowerDot();
 
     const size = this.size / 2;
 
@@ -142,6 +143,28 @@ export default class Pacman {
       this.arrayOfPacmanImagesIndex++;
       if (this.arrayOfPacmanImagesIndex === this.arrayOfPacmanImages.length)
         this.arrayOfPacmanImagesIndex = 0;
+    }
+  }
+
+  #eatPowerDot() {
+    if (this.map.eatPowerDot(this.x, this.y)) {
+      this.powerDotActive = true;
+      this.powerDotExpiration = false;
+      this.timers = [];
+      this.timers.forEach((timer) => clearTimeout(timer));
+
+      let powerDotTimer = setTimeout(() => {
+        this.powerDotActive = false;
+        this.powerDotExpiration = false;
+      }, 6000);
+
+      this.timers.push(powerDotTimer);
+
+      let powerDotExpirationTimer = setTimeout(() => {
+        this.powerDotExpiration = true;
+      }, 3000);
+
+      this.timers.push(powerDotExpirationTimer);
     }
   }
 }

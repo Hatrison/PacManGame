@@ -14,6 +14,10 @@ export default class Map {
 
     this.wall = new Image();
     this.wall.src = "../../images/wall.png";
+
+    this.powerDot = this.pinkDot;
+    this.powerDotAnimationTimerDefault = 30;
+    this.powerDotAnimationTimer = this.powerDotAnimationTimerDefault;
   }
 
   //0 - wall
@@ -32,7 +36,7 @@ export default class Map {
     [0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
     [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
     [0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0],
-    [0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 2, 1, 0, 1, 1, 0],
     [0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
@@ -43,7 +47,8 @@ export default class Map {
         const block = this.map[row][column];
         if (block === 0) this.#drawBlock(ctx, this.wall, column, row);
         else if (block === 1) this.#drawBlock(ctx, this.yellowDot, column, row);
-        else if (block === 5) this.#drawEmptySpace(ctx, column, row);
+        else if (block === 2) this.#drawPowerDot(ctx, column, row);
+        else this.#drawEmptySpace(ctx, column, row);
       }
     }
   }
@@ -56,6 +61,25 @@ export default class Map {
   #drawBlock(ctx, image, column, row) {
     ctx.drawImage(
       image,
+      column * this.size,
+      row * this.size,
+      this.size,
+      this.size
+    );
+  }
+
+  #drawPowerDot(ctx, column, row) {
+    this.powerDotAnimationTimer--;
+    if (this.powerDotAnimationTimer === 0) {
+      this.powerDotAnimationTimer = this.powerDotAnimationTimerDefault;
+      if (this.powerDot == this.pinkDot) {
+        this.powerDot = this.yellowDot;
+      } else {
+        this.powerDot = this.pinkDot;
+      }
+    }
+    ctx.drawImage(
+      this.powerDot,
       column * this.size,
       row * this.size,
       this.size,
@@ -154,6 +178,19 @@ export default class Map {
     const column = x / this.size;
     if (Number.isInteger(row) && Number.isInteger(column)) {
       if (this.map[row][column] === 1) {
+        this.map[row][column] = 5;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  eatPowerDot(x, y) {
+    const row = y / this.size;
+    const column = x / this.size;
+    if (Number.isInteger(row) && Number.isInteger(column)) {
+      const block = this.map[row][column];
+      if (block === 2) {
         this.map[row][column] = 5;
         return true;
       }

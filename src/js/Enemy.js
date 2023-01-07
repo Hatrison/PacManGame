@@ -22,15 +22,41 @@ export default class Enemy {
     this.scaredGhost2.src = "../../images/scaredGhost2.png";
 
     this.ghostImage = this.normalGhost;
+
+    this.scaredExpirationTimerDefault = 10;
+    this.scaredExpirationTimer = this.scaredExpirationTimerDefault;
   }
 
-  draw(ctx, pause) {
+  draw(ctx, pause, pacman) {
     if (!pause) {
       this.#move();
       this.#changeDirection();
     }
-
+    this.#setImage(ctx, pacman);
     ctx.drawImage(this.ghostImage, this.x, this.y, this.size, this.size);
+  }
+
+  #setImage(ctx, pacman) {
+    if (pacman.powerDotActive) {
+      this.#changeImagePowerDotIsActive(pacman);
+    } else {
+      this.ghostImage = this.normalGhost;
+    }
+    ctx.drawImage(this.ghostImage, this.x, this.y, this.size, this.size);
+  }
+
+  #changeImagePowerDotIsActive(pacman) {
+    if (pacman.powerDotExpiration) {
+      this.scaredExpirationTimer--;
+      if (this.scaredExpirationTimer === 0) {
+        this.scaredExpirationTimer = this.scaredExpirationTimerDefault;
+        if (this.ghostImage === this.scaredGhost)
+          this.ghostImage = this.scaredGhost2;
+        else this.ghostImage = this.scaredGhost;
+      }
+    } else {
+      this.ghostImage = this.scaredGhost;
+    }
   }
 
   #changeDirection() {
