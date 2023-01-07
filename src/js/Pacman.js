@@ -44,9 +44,11 @@ export default class Pacman {
     document.addEventListener("keydown", this.#onKeyDown);
   }
 
-  draw(ctx, enemies) {
-    this.#move();
-    this.#animate();
+  draw(ctx, enemies, pause) {
+    if (!pause) {
+      this.#move();
+      this.#animate();
+    }
     this.map.eatDot(this.x, this.y);
     this.#eatPowerDot();
     this.#eatGhost(enemies);

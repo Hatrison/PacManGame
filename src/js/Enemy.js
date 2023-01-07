@@ -33,7 +33,6 @@ export default class Enemy {
       this.#changeDirection();
     }
     this.#setImage(ctx, pacman);
-    ctx.drawImage(this.ghostImage, this.x, this.y, this.size, this.size);
   }
 
   #setImage(ctx, pacman) {

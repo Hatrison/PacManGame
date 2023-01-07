@@ -197,4 +197,12 @@ export default class Map {
     }
     return false;
   }
+
+  win() {
+    return this.#dotsLeft() === undefined;
+  }
+
+  #dotsLeft() {
+    return this.map.flat().find((block) => block === 1);
+  }
 }
