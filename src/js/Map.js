@@ -1,4 +1,5 @@
 import Pacman from "./Pacman.js";
+import Enemy from "./Enemy.js";
 import directions from "./directions.js";
 
 export default class Map {
@@ -83,6 +84,28 @@ export default class Map {
         }
       }
     }
+  }
+
+  getEnemies(speed) {
+    const enemies = [];
+    for (let row = 0; row < this.map.length; row++) {
+      for (let column = 0; column < this.map[row].length; column++) {
+        const block = this.map[row][column];
+        if (block === 4) {
+          this.map[row][column] = 1;
+          enemies.push(
+            new Enemy(
+              column * this.size,
+              row * this.size,
+              this.size,
+              speed,
+              this
+            )
+          );
+        }
+      }
+    }
+    return enemies;
   }
 
   isCollision(x, y, direction) {
