@@ -39,6 +39,8 @@ export default class Pacman {
     ];
     this.arrayOfPacmanImagesIndex = 0;
 
+    this.firstMove = false;
+
     document.addEventListener("keydown", this.#onKeyDown);
   }
 
@@ -69,21 +71,25 @@ export default class Pacman {
       if (this.currentDirection === directions.down)
         this.currentDirection = directions.up;
       this.requestedDirection = directions.up;
+      this.firstMove = true;
     }
     if (code === "KeyD" || code === "ArrowRight") {
       if (this.currentDirection === directions.left)
         this.currentDirection = directions.right;
       this.requestedDirection = directions.right;
+      this.firstMove = true;
     }
     if (code === "KeyS" || code === "ArrowDown") {
       if (this.currentDirection === directions.up)
         this.currentDirection = directions.down;
       this.requestedDirection = directions.down;
+      this.firstMove = true;
     }
     if (code === "KeyA" || code === "ArrowLeft") {
       if (this.currentDirection === directions.right)
         this.currentDirection = directions.left;
       this.requestedDirection = directions.left;
+      this.firstMove = true;
     }
   };
 

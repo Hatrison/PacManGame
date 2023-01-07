@@ -24,9 +24,12 @@ export default class Enemy {
     this.ghostImage = this.normalGhost;
   }
 
-  draw(ctx) {
-    this.#move();
-    this.#changeDirection();
+  draw(ctx, pause) {
+    if (!pause) {
+      this.#move();
+      this.#changeDirection();
+    }
+
     ctx.drawImage(this.ghostImage, this.x, this.y, this.size, this.size);
   }
 
