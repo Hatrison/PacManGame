@@ -79,22 +79,14 @@ export default class Enemy {
   }
 
   #move() {
-    if (!this.map.isCollision(this.x, this.y, this.direction)) {
-      switch (this.direction) {
-        case directions.up:
-          this.y -= this.speed;
-          break;
-        case directions.right:
-          this.x += this.speed;
-          break;
-        case directions.down:
-          this.y += this.speed;
-          break;
-        case directions.left:
-          this.x -= this.speed;
-          break;
-      }
-    }
+    const directionsEnemy = {
+      0: () => (this.y -= this.speed), //up
+      1: () => (this.x += this.speed), //right
+      2: () => (this.y += this.speed), //down
+      3: () => (this.x -= this.speed), //left
+    };
+    if (!this.map.isCollision(this.x, this.y, this.direction))
+      directionsEnemy[this.direction]();
   }
 
   isCollision(pacman) {

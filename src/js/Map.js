@@ -143,28 +143,34 @@ export default class Map {
       let nextColumn = 0;
       let nextRow = 0;
 
-      switch (direction) {
-        case directions.up:
+      const nextBlock = {
+        0: () => {
+          //up
           nextRow = y - this.size;
           row = nextRow / this.size;
           column = x / this.size;
-          break;
-        case directions.right:
+        },
+        1: () => {
+          //right
           nextColumn = x + this.size;
           column = nextColumn / this.size;
           row = y / this.size;
-          break;
-        case directions.down:
+        },
+        2: () => {
+          //down
           nextRow = y + this.size;
           row = nextRow / this.size;
           column = x / this.size;
-          break;
-        case directions.left:
+        },
+        3: () => {
+          //left
           nextColumn = x - this.size;
           column = nextColumn / this.size;
           row = y / this.size;
-          break;
-      }
+        },
+      };
+      nextBlock[direction]();
+
       const block = this.map[row][column];
       if (block === 0) {
         return true;

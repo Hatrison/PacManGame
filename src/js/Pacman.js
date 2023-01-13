@@ -116,24 +116,30 @@ export default class Pacman {
       this.animationTimer = this.animationTimerDefault;
     }
 
-    switch (this.currentDirection) {
-      case directions.up:
+    const directionsPacman = {
+      0: () => {
+        //up
         this.y -= this.speed;
         this.pacmanRotation = this.rotation.up;
-        break;
-      case directions.right:
+      },
+      1: () => {
+        //right
         this.x += this.speed;
         this.pacmanRotation = this.rotation.right;
-        break;
-      case directions.down:
+      },
+      2: () => {
+        //down
         this.y += this.speed;
         this.pacmanRotation = this.rotation.down;
-        break;
-      case directions.left:
+      },
+      3: () => {
+        //left
         this.x -= this.speed;
         this.pacmanRotation = this.rotation.left;
-        break;
-    }
+      },
+    };
+
+    directionsPacman[this.currentDirection]();
   }
 
   #animate() {
