@@ -112,18 +112,11 @@ export default class Map {
 
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
-        if (this.map[row][column] === 4) {
-          this.map[row][column] = 1;
-          enemies.push(
-            new Enemy(
-              column * this.size,
-              row * this.size,
-              this.size,
-              speed,
-              this
-            )
-          );
-        }
+        if (this.map[row][column] !== 4) continue;
+        this.map[row][column] = 1;
+        enemies.push(
+          new Enemy(column * this.size, row * this.size, this.size, speed, this)
+        );
       }
     }
 
