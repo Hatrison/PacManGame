@@ -41,6 +41,8 @@ export default class Pacman {
 
     this.firstMove = false;
 
+    this.timers = [];
+
     document.addEventListener("keydown", this.#onKeyDown);
   }
 
@@ -75,37 +77,35 @@ export default class Pacman {
       if (this.currentDirection === directions.down)
         this.currentDirection = directions.up;
       this.requestedDirection = directions.up;
-      this.firstMove = true;
+      this.#firstMove();
     }
     if (code === "KeyD" || code === "ArrowRight") {
       if (this.currentDirection === directions.left)
         this.currentDirection = directions.right;
       this.requestedDirection = directions.right;
-      this.firstMove = true;
+      this.#firstMove();
     }
     if (code === "KeyS" || code === "ArrowDown") {
       if (this.currentDirection === directions.up)
         this.currentDirection = directions.down;
       this.requestedDirection = directions.down;
-      this.firstMove = true;
+      this.#firstMove();
     }
     if (code === "KeyA" || code === "ArrowLeft") {
       if (this.currentDirection === directions.right)
         this.currentDirection = directions.left;
       this.requestedDirection = directions.left;
-      this.firstMove = true;
+      this.#firstMove();
     }
   };
 
   #move() {
     if (this.currentDirection !== this.requestedDirection) {
-      if (
-        Number.isInteger(this.x / this.size) &&
-        Number.isInteger(this.y / this.size)
-      ) {
+      const x = this.x / this.size;
+      const y = this.y / this.size;
+      if (Number.isInteger(x) && Number.isInteger(y))
         if (!this.map.isCollision(this.x, this.y, this.requestedDirection))
           this.currentDirection = this.requestedDirection;
-      }
     }
 
     if (this.map.isCollision(this.x, this.y, this.currentDirection)) {
@@ -143,9 +143,8 @@ export default class Pacman {
   }
 
   #animate() {
-    if (this.animationTimer === null) {
-      return;
-    }
+    if (this.animationTimer === null) return;
+
     this.animationTimer--;
     if (this.animationTimer === 0) {
       this.animationTimer = this.animationTimerDefault;
@@ -159,7 +158,6 @@ export default class Pacman {
     if (this.map.eatPowerDot(this.x, this.y)) {
       this.powerDotActive = true;
       this.powerDotExpiration = false;
-      this.timers = [];
       this.timers.forEach((timer) => clearTimeout(timer));
 
       let powerDotTimer = setTimeout(() => {
@@ -178,13 +176,15 @@ export default class Pacman {
   }
 
   #eatGhost(enemies) {
-    if (this.powerDotActive) {
-      const enemiesCollided = enemies.filter((enemy) =>
-        enemy.isCollision(this)
-      );
-      enemiesCollided.forEach((enemy) =>
-        enemies.splice(enemies.indexOf(enemy), 1)
-      );
-    }
+    if (!this.powerDotActive) return;
+    const enemiesCollided = enemies.filter((enemy) => enemy.isCollision(this));
+    enemiesCollided.forEach((enemy) =>
+      enemies.splice(enemies.indexOf(enemy), 1)
+    );
+  }
+
+  #firstMove() {
+    if (!this.map.isCollision(this.x, this.y, this.requestedDirection))
+      this.firstMove = true;
   }
 }

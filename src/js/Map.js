@@ -124,7 +124,7 @@ export default class Map {
   }
 
   isCollision(x, y, direction) {
-    if (direction === null) return;
+    if (direction === undefined) return;
 
     const row = y / this.size;
     const column = x / this.size;
