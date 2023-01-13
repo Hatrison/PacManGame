@@ -2,6 +2,7 @@ import Map from "./Map.js";
 
 const size = 48;
 const speed = 3;
+const fps = 1000 / 60;
 
 const canvas = document.getElementById("js-canvas");
 const textDiv = document.querySelector(".js-final-text-thumb");
@@ -53,4 +54,4 @@ function drawGameEnd() {
 }
 
 map.setCanvasSize(canvas);
-const mainLoop = setInterval(gameLoop, 1000 / 60);
+const mainLoop = setInterval(gameLoop, fps);
