@@ -1,6 +1,6 @@
 import Pacman from "./Pacman.js";
 import Enemy from "./Enemy.js";
-import directions from "./directions.js";
+import checkInt from "./checkInteger.js";
 
 export default class Map {
   constructor(size) {
@@ -128,7 +128,7 @@ export default class Map {
 
     const row = y / this.size;
     const column = x / this.size;
-    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
+    if (!checkInt(column, row)) return;
 
     let nextColumn = 0;
     let nextRow = 0;
@@ -158,7 +158,7 @@ export default class Map {
   eatDot(x, y) {
     const row = y / this.size;
     const column = x / this.size;
-    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
+    if (!checkInt(column, row)) return;
 
     if (this.map[row][column] === 1) this.map[row][column] = 5;
   }
@@ -166,7 +166,7 @@ export default class Map {
   eatPowerDot(x, y) {
     const row = y / this.size;
     const column = x / this.size;
-    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
+    if (!checkInt(column, row)) return;
 
     if (this.map[row][column] === 2) {
       this.map[row][column] = 5;

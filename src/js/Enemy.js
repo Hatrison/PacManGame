@@ -1,4 +1,5 @@
 import directions from "./directions.js";
+import checkInt from "./checkInteger.js";
 
 export default class Enemy {
   constructor(x, y, size, speed, map) {
@@ -67,9 +68,7 @@ export default class Enemy {
     }
 
     if (newDirection !== null && this.direction !== newDirection) {
-      const x = this.x / this.size;
-      const y = this.y / this.size;
-      if (Number.isInteger(x) && Number.isInteger(y))
+      if (checkInt(this.x, this.y, this.size))
         if (!this.map.isCollision(this.x, this.y, newDirection))
           this.direction = newDirection;
     }
