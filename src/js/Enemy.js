@@ -99,14 +99,12 @@ export default class Enemy {
 
   isCollision(pacman) {
     const size = this.size / 2;
-    if (
-      this.x < pacman.x + size &&
-      this.x + size > pacman.x &&
-      this.y < pacman.y + size &&
-      this.y + size > pacman.y
-    )
-      return true;
-    else return false;
+    const { x: xPacman, y: yPacman } = pacman;
+    const x = this.x + size;
+    const y = this.y + size;
+    const x2 = xPacman + size;
+    const y2 = yPacman + size;
+    return this.x < x2 && x > xPacman && this.y < y2 && y > yPacman;
   }
 
   #newDirection() {
