@@ -27,6 +27,13 @@ export default class Map {
   //4 - enemy
   //5 - empty space
 
+  #wall = 0;
+  #dot = 1;
+  #powerDot = 2;
+  #pacman = 3;
+  #enemy = 4;
+  #emptySpace = 5;
+
   map = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 2, 1, 1, 3, 1, 1, 1, 1, 1, 1, 2, 0],
@@ -45,9 +52,10 @@ export default class Map {
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
         const block = this.map[row][column];
-        if (block === 0) this.#drawBlock(ctx, this.wall, column, row);
-        else if (block === 1) this.#drawBlock(ctx, this.yellowDot, column, row);
-        else if (block === 2) this.#drawPowerDot(ctx, column, row);
+        if (block === this.#wall) this.#drawBlock(ctx, this.wall, column, row);
+        else if (block === this.#dot)
+          this.#drawBlock(ctx, this.yellowDot, column, row);
+        else if (block === this.#powerDot) this.#drawPowerDot(ctx, column, row);
         else this.#drawEmptySpace(ctx, column, row);
       }
     }
@@ -94,9 +102,9 @@ export default class Map {
 
   getPacman(speed) {
     for (let row = 0; row < this.map.length; row++) {
-      const column = this.map[row].indexOf(3);
+      const column = this.map[row].indexOf(this.#pacman);
       if (column === -1) continue;
-      this.map[row][column] = 1;
+      this.map[row][column] = this.#dot;
       return new Pacman(
         column * this.size,
         row * this.size,
@@ -112,8 +120,8 @@ export default class Map {
 
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
-        if (this.map[row][column] !== 4) continue;
-        this.map[row][column] = 1;
+        if (this.map[row][column] !== this.#enemy) continue;
+        this.map[row][column] = this.#dot;
         enemies.push(
           new Enemy(column * this.size, row * this.size, this.size, speed, this)
         );
@@ -160,7 +168,8 @@ export default class Map {
     const column = x / this.size;
     if (!checkInt(column, row)) return;
 
-    if (this.map[row][column] === 1) this.map[row][column] = 5;
+    if (this.map[row][column] === this.#dot)
+      this.map[row][column] = this.#emptySpace;
   }
 
   eatPowerDot(x, y) {
@@ -168,8 +177,8 @@ export default class Map {
     const column = x / this.size;
     if (!checkInt(column, row)) return;
 
-    if (this.map[row][column] === 2) {
-      this.map[row][column] = 5;
+    if (this.map[row][column] === this.#powerDot) {
+      this.map[row][column] = this.#emptySpace;
       return true;
     }
   }
@@ -179,6 +188,6 @@ export default class Map {
   }
 
   #dotsLeft() {
-    return this.map.flat().find((block) => block === 1);
+    return this.map.flat().find((block) => block === this.#dot);
   }
 }
