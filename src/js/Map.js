@@ -72,12 +72,12 @@ export default class Map {
     this.powerDotAnimationTimer--;
     if (this.powerDotAnimationTimer === 0) {
       this.powerDotAnimationTimer = this.powerDotAnimationTimerDefault;
-      if (this.powerDot == this.pinkDot) {
-        this.powerDot = this.yellowDot;
-      } else {
-        this.powerDot = this.pinkDot;
-      }
+
+      this.powerDot === this.pinkDot
+        ? (this.powerDot = this.yellowDot)
+        : (this.powerDot = this.pinkDot);
     }
+
     ctx.drawImage(
       this.powerDot,
       column * this.size,
@@ -94,28 +94,25 @@ export default class Map {
 
   getPacman(speed) {
     for (let row = 0; row < this.map.length; row++) {
-      for (let column = 0; column < this.map[row].length; column++) {
-        const block = this.map[row][column];
-        if (block === 3) {
-          this.map[row][column] = 1;
-          return new Pacman(
-            column * this.size,
-            row * this.size,
-            this.size,
-            speed,
-            this
-          );
-        }
-      }
+      const column = this.map[row].indexOf(3);
+      if (column === -1) continue;
+      this.map[row][column] = 1;
+      return new Pacman(
+        column * this.size,
+        row * this.size,
+        this.size,
+        speed,
+        this
+      );
     }
   }
 
   getEnemies(speed) {
     const enemies = [];
+
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
-        const block = this.map[row][column];
-        if (block === 4) {
+        if (this.map[row][column] === 4) {
           this.map[row][column] = 1;
           enemies.push(
             new Enemy(
@@ -129,79 +126,59 @@ export default class Map {
         }
       }
     }
+
     return enemies;
   }
 
   isCollision(x, y, direction) {
-    if (direction === null) {
-      return;
-    }
+    if (direction === null) return;
 
-    if (Number.isInteger(x / this.size) && Number.isInteger(y / this.size)) {
-      let column = 0;
-      let row = 0;
-      let nextColumn = 0;
-      let nextRow = 0;
+    const row = y / this.size;
+    const column = x / this.size;
+    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
 
-      const nextBlock = {
-        0: () => {
-          //up
-          nextRow = y - this.size;
-          row = nextRow / this.size;
-          column = x / this.size;
-        },
-        1: () => {
-          //right
-          nextColumn = x + this.size;
-          column = nextColumn / this.size;
-          row = y / this.size;
-        },
-        2: () => {
-          //down
-          nextRow = y + this.size;
-          row = nextRow / this.size;
-          column = x / this.size;
-        },
-        3: () => {
-          //left
-          nextColumn = x - this.size;
-          column = nextColumn / this.size;
-          row = y / this.size;
-        },
-      };
-      nextBlock[direction]();
+    let nextColumn = 0;
+    let nextRow = 0;
+    const nextBlock = {
+      0: () => {
+        nextRow = row - 1; //up
+        nextColumn = column;
+      },
+      1: () => {
+        nextRow = row;
+        nextColumn = column + 1; //right
+      },
+      2: () => {
+        nextRow = row + 1; //down
+        nextColumn = column;
+      },
+      3: () => {
+        nextRow = row;
+        nextColumn = column - 1; //left
+      },
+    };
+    nextBlock[direction]();
 
-      const block = this.map[row][column];
-      if (block === 0) {
-        return true;
-      }
-    }
-    return false;
+    return this.map[nextRow][nextColumn] === 0;
   }
 
   eatDot(x, y) {
     const row = y / this.size;
     const column = x / this.size;
-    if (Number.isInteger(row) && Number.isInteger(column)) {
-      if (this.map[row][column] === 1) {
-        this.map[row][column] = 5;
-        return true;
-      }
-    }
-    return false;
+    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
+
+    if (this.map[row][column] === 1) this.map[row][column] = 5;
   }
 
   eatPowerDot(x, y) {
     const row = y / this.size;
     const column = x / this.size;
-    if (Number.isInteger(row) && Number.isInteger(column)) {
-      const block = this.map[row][column];
-      if (block === 2) {
-        this.map[row][column] = 5;
-        return true;
-      }
+    if (!(Number.isInteger(row) && Number.isInteger(column))) return;
+
+    if (this.map[row][column] === 2) {
+      this.map[row][column] = 5;
+      return true;
     }
-    return false;
   }
 
   win() {
