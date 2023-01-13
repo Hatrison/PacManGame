@@ -1,8 +1,8 @@
 const directions = {
-  up: 0,
-  right: 1,
-  down: 2,
-  left: 3,
+  up: "up",
+  right: "right",
+  down: "down",
+  left: "left",
 };
 
 export default directions;

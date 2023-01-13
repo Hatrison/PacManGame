@@ -125,6 +125,7 @@ export default class Map {
 
   isCollision(x, y, direction) {
     if (direction === undefined) return;
+    console.log(direction);
 
     const row = y / this.size;
     const column = x / this.size;
@@ -133,21 +134,21 @@ export default class Map {
     let nextColumn = 0;
     let nextRow = 0;
     const nextBlock = {
-      0: () => {
-        nextRow = row - 1; //up
+      up: () => {
+        nextRow = row - 1;
         nextColumn = column;
       },
-      1: () => {
+      right: () => {
         nextRow = row;
-        nextColumn = column + 1; //right
+        nextColumn = column + 1;
       },
-      2: () => {
-        nextRow = row + 1; //down
+      down: () => {
+        nextRow = row + 1;
         nextColumn = column;
       },
-      3: () => {
+      left: () => {
         nextRow = row;
-        nextColumn = column - 1; //left
+        nextColumn = column - 1;
       },
     };
     nextBlock[direction]();

@@ -77,10 +77,10 @@ export default class Enemy {
 
   #move() {
     const directionsEnemy = {
-      0: () => (this.y -= this.speed), //up
-      1: () => (this.x += this.speed), //right
-      2: () => (this.y += this.speed), //down
-      3: () => (this.x -= this.speed), //left
+      up: () => (this.y -= this.speed),
+      right: () => (this.x += this.speed),
+      down: () => (this.y += this.speed),
+      left: () => (this.x -= this.speed),
     };
     if (!this.map.isCollision(this.x, this.y, this.direction))
       directionsEnemy[this.direction]();
@@ -97,7 +97,14 @@ export default class Enemy {
   }
 
   #newDirection() {
-    return Math.floor(Math.random() * Object.keys(directions).length);
+    const numberToStringDirections = {
+      0: "up",
+      1: "right",
+      2: "down",
+      3: "left",
+    };
+    const route = Math.floor(Math.random() * Object.keys(directions).length);
+    return numberToStringDirections[route];
   }
 
   #random(min, max) {

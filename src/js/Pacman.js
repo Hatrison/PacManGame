@@ -117,23 +117,19 @@ export default class Pacman {
     }
 
     const directionsPacman = {
-      0: () => {
-        //up
+      up: () => {
         this.y -= this.speed;
         this.pacmanRotation = this.rotation.up;
       },
-      1: () => {
-        //right
+      right: () => {
         this.x += this.speed;
         this.pacmanRotation = this.rotation.right;
       },
-      2: () => {
-        //down
+      down: () => {
         this.y += this.speed;
         this.pacmanRotation = this.rotation.down;
       },
-      3: () => {
-        //left
+      left: () => {
         this.x -= this.speed;
         this.pacmanRotation = this.rotation.left;
       },
