@@ -36,11 +36,10 @@ export default class Enemy {
   }
 
   #setImage(ctx, pacman) {
-    if (pacman.powerDotActive) {
-      this.#changeImagePowerDotIsActive(pacman);
-    } else {
-      this.ghostImage = this.normalGhost;
-    }
+    pacman.powerDotActive
+      ? this.#changeImagePowerDotIsActive(pacman)
+      : (this.ghostImage = this.normalGhost);
+
     ctx.drawImage(this.ghostImage, this.x, this.y, this.size, this.size);
   }
 
@@ -49,9 +48,10 @@ export default class Enemy {
       this.scaredExpirationTimer--;
       if (this.scaredExpirationTimer === 0) {
         this.scaredExpirationTimer = this.scaredExpirationTimerDefault;
-        if (this.ghostImage === this.scaredGhost)
-          this.ghostImage = this.scaredGhost2;
-        else this.ghostImage = this.scaredGhost;
+
+        this.ghostImage === this.scaredGhost
+          ? (this.ghostImage = this.scaredGhost2)
+          : (this.ghostImage = this.scaredGhost);
       }
     } else {
       this.ghostImage = this.scaredGhost;
@@ -67,14 +67,11 @@ export default class Enemy {
     }
 
     if (newDirection !== null && this.direction !== newDirection) {
-      if (
-        Number.isInteger(this.x / this.size) &&
-        Number.isInteger(this.y / this.size)
-      ) {
-        if (!this.map.isCollision(this.x, this.y, newDirection)) {
+      const x = this.x / this.size;
+      const y = this.y / this.size;
+      if (Number.isInteger(x) && Number.isInteger(y))
+        if (!this.map.isCollision(this.x, this.y, newDirection))
           this.direction = newDirection;
-        }
-      }
     }
   }
 
