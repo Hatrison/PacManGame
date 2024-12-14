@@ -19,7 +19,9 @@ export default class Map {
     this.powerDotAnimationTimerDefault = 30;
     this.powerDotAnimationTimer = this.powerDotAnimationTimerDefault;
 
-    this.originalMap = JSON.parse(JSON.stringify(this.map));
+    this.levels = [this.level1, this.level2];
+    this.currentLevelIndex = 0;
+    this.loadLevel(this.currentLevelIndex);
   }
 
   // 0 - wall
@@ -36,7 +38,7 @@ export default class Map {
   #enemy = 4;
   #emptySpace = 5;
 
-  map = [
+  level1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 2, 1, 1, 3, 1, 1, 1, 1, 1, 1, 2, 0],
     [0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0],
@@ -49,6 +51,36 @@ export default class Map {
     [0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
   ];
+
+  level2 = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 0],
+    [0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0],
+    [0, 1, 0, 1, 4, 1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+    [0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0],
+    [0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+    [0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0, 0, 0, 2, 1, 0, 1, 1, 0],
+    [0, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  loadLevel(levelIndex) {
+    this.currentLevelIndex = levelIndex;
+    this.map = JSON.parse(JSON.stringify(this.levels[levelIndex]));
+  }
+
+  nextLevel() {
+    if (this.currentLevelIndex + 1 < this.levels.length) {
+      this.currentLevelIndex++;
+      this.loadLevel(this.currentLevelIndex);
+      const levelDisplay = document.getElementById("level-display");
+      levelDisplay.innerText = `Level: ${this.currentLevelIndex + 1}`;
+    } else {
+      console.log("You've completed the game!");
+    }
+  }
 
   draw(ctx) {
     for (let row = 0; row < this.map.length; row++) {
@@ -103,7 +135,7 @@ export default class Map {
   }
 
   resetMap() {
-    this.map = JSON.parse(JSON.stringify(this.originalMap));
+    this.loadLevel(this.currentLevelIndex);
   }
 
   getPacman(speed) {
@@ -126,7 +158,7 @@ export default class Map {
 
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
-        if (this.originalMap[row][column] === this.#enemy) {
+        if (this.map[row][column] === this.#enemy) {
           this.map[row][column] = this.#dot;
           enemies.push(
             new Enemy(
