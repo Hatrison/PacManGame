@@ -8,9 +8,18 @@
     <link rel="stylesheet" href="./src/css/main.css" />
   </head>
   <body>
-    <canvas id="js-canvas"> </canvas>
+    <div id="menu" class="menu">
+      <h1>PacMan</h1>
+      <button id="start-button">Start Game</button>
+      <button id="exit-button">Exit</button>
+    </div>
+
+    <canvas id="js-canvas" class="hidden"></canvas>
+
     <div class="js-final-text-thumb final-text-thumb hidden">
       <p class="js-final-text final-text"></p>
+      <button id="restart-button">Restart</button>
+      <button id="menu-button">Back to Menu</button>
     </div>
 
     <script src="./src/js/index.js" type="module"></script>

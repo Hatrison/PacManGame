@@ -3,13 +3,15 @@ import checkInt from "./checkInteger.js";
 
 export default class Pacman {
   constructor(x, y, size, speed, map) {
+    this.initialX = x;
+    this.initialY = y;
     this.x = x;
     this.y = y;
     this.size = size;
     this.speed = speed;
     this.map = map;
 
-    this.currenDirection = null;
+    this.currentDirection = null;
     this.requestedDirection = null;
 
     this.animationTimerDefault = 10;
@@ -42,6 +44,9 @@ export default class Pacman {
 
     this.firstMove = false;
 
+    this.powerDotActive = false;
+    this.powerDotExpiration = false;
+
     this.timers = [];
 
     document.addEventListener("keydown", this.#onKeyDown);
@@ -70,6 +75,21 @@ export default class Pacman {
     );
 
     ctx.restore();
+  }
+
+  reset() {
+    this.x = this.initialX;
+    this.y = this.initialY;
+    this.currentDirection = null;
+    this.requestedDirection = null;
+    this.firstMove = false;
+    this.animationTimer = null;
+    this.arrayOfPacmanImagesIndex = 0;
+    this.powerDotActive = false;
+    this.powerDotExpiration = false;
+
+    this.timers.forEach((timer) => clearTimeout(timer));
+    this.timers = [];
   }
 
   #onKeyDown = (event) => {

@@ -18,14 +18,16 @@ export default class Map {
     this.powerDot = this.pinkDot;
     this.powerDotAnimationTimerDefault = 30;
     this.powerDotAnimationTimer = this.powerDotAnimationTimerDefault;
+
+    this.originalMap = JSON.parse(JSON.stringify(this.map));
   }
 
-  //0 - wall
-  //1 - dots
-  //2 - power dot
-  //3 - pacman
-  //4 - enemy
-  //5 - empty space
+  // 0 - wall
+  // 1 - dots
+  // 2 - power dot
+  // 3 - pacman
+  // 4 - enemy
+  // 5 - empty space
 
   #wall = 0;
   #dot = 1;
@@ -100,6 +102,10 @@ export default class Map {
     ctx.fillRect(column * this.size, row * this.size, this.size, this.size);
   }
 
+  resetMap() {
+    this.map = JSON.parse(JSON.stringify(this.originalMap));
+  }
+
   getPacman(speed) {
     for (let row = 0; row < this.map.length; row++) {
       const column = this.map[row].indexOf(this.#pacman);
@@ -120,15 +126,46 @@ export default class Map {
 
     for (let row = 0; row < this.map.length; row++) {
       for (let column = 0; column < this.map[row].length; column++) {
-        if (this.map[row][column] !== this.#enemy) continue;
-        this.map[row][column] = this.#dot;
-        enemies.push(
-          new Enemy(column * this.size, row * this.size, this.size, speed, this)
-        );
+        if (this.originalMap[row][column] === this.#enemy) {
+          this.map[row][column] = this.#dot;
+          enemies.push(
+            new Enemy(
+              column * this.size,
+              row * this.size,
+              this.size,
+              speed,
+              this
+            )
+          );
+        }
       }
     }
 
     return enemies;
+  }
+
+  getPacmanStartingPoint() {
+    for (let row = 0; row < this.map.length; row++) {
+      const column = this.map[row].indexOf(this.#pacman);
+      if (column !== -1) {
+        return { x: column * this.size, y: row * this.size };
+      }
+    }
+    return { x: 0, y: 0 };
+  }
+
+  getRandomStartingPoint() {
+    const emptySpaces = [];
+    for (let row = 0; row < this.map.length; row++) {
+      for (let column = 0; column < this.map[row].length; column++) {
+        if (this.map[row][column] === this.#emptySpace) {
+          emptySpaces.push({ x: column * this.size, y: row * this.size });
+        }
+      }
+    }
+    if (emptySpaces.length === 0) return { x: 0, y: 0 };
+    const randomIndex = Math.floor(Math.random() * emptySpaces.length);
+    return emptySpaces[randomIndex];
   }
 
   isCollision(x, y, direction) {
@@ -160,7 +197,7 @@ export default class Map {
     };
     nextBlock[direction]();
 
-    return this.map[nextRow][nextColumn] === 0;
+    return this.map[nextRow][nextColumn] === this.#wall;
   }
 
   eatDot(x, y) {

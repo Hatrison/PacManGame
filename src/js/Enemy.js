@@ -3,6 +3,8 @@ import checkInt from "./checkInteger.js";
 
 export default class Enemy {
   constructor(x, y, size, speed, map) {
+    this.initialX = x;
+    this.initialY = y;
     this.x = x;
     this.y = y;
     this.size = size;
@@ -34,6 +36,19 @@ export default class Enemy {
       this.#changeDirection();
     }
     this.#setImage(ctx, pacman);
+  }
+
+  reset() {
+    this.x = this.initialX;
+    this.y = this.initialY;
+    this.direction = this.#newDirection();
+    this.ghostImage = this.normalGhost;
+    this.scaredExpirationTimer = this.scaredExpirationTimerDefault;
+  }
+
+  setPosition(x, y) {
+    this.x = x;
+    this.y = y;
   }
 
   #setImage(ctx, pacman) {
