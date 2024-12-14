@@ -186,3 +186,17 @@ button:hover {
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
+#start-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px 40px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 20;
+}

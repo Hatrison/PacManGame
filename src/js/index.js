@@ -26,12 +26,21 @@ class Game {
     this.gameRunning = false;
     this.mainLoop = null;
     this.paused = false;
+    this.started = false;
 
     this.initEventListeners();
+    this.showStartMessage();
   }
 
   initEventListeners() {
     document.addEventListener("keydown", (e) => {
+      const startKeys = ["ArrowLeft", "ArrowRight", "KeyA", "KeyD"];
+
+      if (!this.started && startKeys.includes(e.code)) {
+        this.hideStartMessage();
+        this.started = true;
+      }
+
       if (e.key === "p" || e.key === "P") {
         this.paused = !this.paused;
         this.paused ? this.showPauseScreen() : this.hidePauseScreen();
@@ -61,6 +70,21 @@ class Game {
     });
   }
 
+  showStartMessage() {
+    const startMessage = document.createElement("div");
+    startMessage.id = "start-message";
+    startMessage.innerText = "Press any move key to start moving";
+
+    document.body.appendChild(startMessage);
+  }
+
+  hideStartMessage() {
+    const startMessage = document.getElementById("start-message");
+    if (startMessage) {
+      startMessage.remove();
+    }
+  }
+
   startGame() {
     clearInterval(this.mainLoop);
     this.gameRunning = true;
@@ -73,6 +97,7 @@ class Game {
     clearInterval(this.mainLoop);
     this.gameOver = false;
     this.gameWin = false;
+    this.started = false;
     this.textDiv.classList.add("hidden");
 
     this.map.resetMap();
