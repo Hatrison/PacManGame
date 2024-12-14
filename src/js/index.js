@@ -90,7 +90,7 @@ class Game {
     this.gameRunning = true;
     this.map.setCanvasSize(this.canvas);
     this.mainLoop = setInterval(() => this.gameLoop(), this.fps);
-    this.map.updateLevelDisplay();
+    this.updateLevelDisplay();
   }
 
   resetGame() {
@@ -148,12 +148,18 @@ class Game {
       this.map.nextLevel();
       this.pacman.reset();
       this.reinitializeEnemies();
+      this.updateLevelDisplay();
       this.showLevelModal(this.map.currentLevelIndex + 1);
     } else {
       this.gameWin = true;
       this.drawGameEnd();
       this.map.currentLevelIndex = 0;
     }
+  }
+
+  updateLevelDisplay() {
+    const levelDisplay = document.getElementById("level-display");
+    levelDisplay.innerText = `Level: ${this.map.currentLevelIndex + 1}`;
   }
 
   showLevelModal(level) {

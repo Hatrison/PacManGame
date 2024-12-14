@@ -75,15 +75,9 @@ export default class Map {
     if (this.currentLevelIndex + 1 < this.levels.length) {
       this.currentLevelIndex++;
       this.loadLevel(this.currentLevelIndex);
-      this.updateLevelDisplay();
     } else {
       console.log("You've completed the game!");
     }
-  }
-
-  updateLevelDisplay() {
-    const levelDisplay = document.getElementById("level-display");
-    levelDisplay.innerText = `Level: ${this.currentLevelIndex + 1}`;
   }
 
   draw(ctx) {
