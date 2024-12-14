@@ -1,205 +1,204 @@
 import Map from "./Map.js";
 
-const size = 48;
-const speed = 3;
-const fps = 1000 / 60;
+class Game {
+  constructor() {
+    this.size = 48;
+    this.speed = 3;
+    this.fps = 1000 / 60;
 
-const canvas = document.getElementById("js-canvas");
-const textDiv = document.querySelector(".js-final-text-thumb");
-const text = document.querySelector(".js-final-text");
-const startButton = document.getElementById("start-button");
-const exitButton = document.getElementById("exit-button");
-const restartButton = document.getElementById("restart-button");
-const menuButton = document.getElementById("menu-button");
-const menu = document.getElementById("menu");
-const levelDisplay = document.getElementById("level-display");
-const ctx = canvas.getContext("2d");
-const map = new Map(size);
-let pacman = map.getPacman(speed);
-let enemies = map.getEnemies(speed);
+    this.canvas = document.getElementById("js-canvas");
+    this.textDiv = document.querySelector(".js-final-text-thumb");
+    this.text = document.querySelector(".js-final-text");
+    this.startButton = document.getElementById("start-button");
+    this.exitButton = document.getElementById("exit-button");
+    this.restartButton = document.getElementById("restart-button");
+    this.menuButton = document.getElementById("menu-button");
+    this.menu = document.getElementById("menu");
+    this.levelDisplay = document.getElementById("level-display");
+    this.ctx = this.canvas.getContext("2d");
 
-let gameOver = false;
-let gameWin = false;
-let gameRunning = false;
-let mainLoop;
+    this.map = new Map(this.size);
+    this.pacman = this.map.getPacman(this.speed);
+    this.enemies = this.map.getEnemies(this.speed);
 
-let paused = false;
+    this.gameOver = false;
+    this.gameWin = false;
+    this.gameRunning = false;
+    this.mainLoop = null;
+    this.paused = false;
 
-document.addEventListener("keydown", (e) => {
-  if (e.key === "p" || e.key === "P") {
-    paused = !paused;
-    if (paused) {
-      showPauseScreen();
+    this.initEventListeners();
+  }
+
+  initEventListeners() {
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "p" || e.key === "P") {
+        this.paused = !this.paused;
+        this.paused ? this.showPauseScreen() : this.hidePauseScreen();
+      }
+    });
+
+    this.startButton.addEventListener("click", () => {
+      this.menu.classList.add("hidden");
+      this.canvas.classList.remove("hidden");
+      this.startGame();
+    });
+
+    this.exitButton.addEventListener("click", () => {
+      window.close();
+    });
+
+    this.restartButton.addEventListener("click", () => {
+      this.resetGame();
+      this.startGame();
+    });
+
+    this.menuButton.addEventListener("click", () => {
+      this.resetGame();
+      this.textDiv.classList.add("hidden");
+      this.canvas.classList.add("hidden");
+      this.menu.classList.remove("hidden");
+    });
+  }
+
+  startGame() {
+    clearInterval(this.mainLoop);
+    this.gameRunning = true;
+    this.map.setCanvasSize(this.canvas);
+    this.mainLoop = setInterval(() => this.gameLoop(), this.fps);
+    this.map.updateLevelDisplay();
+  }
+
+  resetGame() {
+    clearInterval(this.mainLoop);
+    this.gameOver = false;
+    this.gameWin = false;
+    this.textDiv.classList.add("hidden");
+
+    this.map.resetMap();
+    this.pacman.reset();
+    this.reinitializeEnemies();
+  }
+
+  reinitializeEnemies() {
+    this.enemies = this.map.getEnemies(this.speed);
+  }
+
+  showPauseScreen() {
+    const pauseOverlay = document.createElement("div");
+    pauseOverlay.id = "pause-overlay";
+
+    const pauseText = document.createElement("div");
+    pauseText.className = "pause-text";
+    pauseText.innerText = "Paused";
+
+    const continueText = document.createElement("div");
+    continueText.className = "continue-text";
+    continueText.innerText = "To continue, press 'P'";
+
+    const continueButton = document.createElement("button");
+    continueButton.className = "continue-button";
+    continueButton.innerText = "Continue";
+    continueButton.addEventListener("click", () => {
+      this.paused = false;
+      this.hidePauseScreen();
+    });
+
+    pauseOverlay.appendChild(pauseText);
+    pauseOverlay.appendChild(continueText);
+    pauseOverlay.appendChild(continueButton);
+
+    document.body.appendChild(pauseOverlay);
+  }
+
+  hidePauseScreen() {
+    const pauseOverlay = document.getElementById("pause-overlay");
+    if (pauseOverlay) {
+      pauseOverlay.remove();
+    }
+  }
+
+  nextLevel() {
+    if (this.map.currentLevelIndex + 1 < this.map.levels.length) {
+      this.map.nextLevel();
+      this.pacman.reset();
+      this.reinitializeEnemies();
+      this.showLevelModal(this.map.currentLevelIndex + 1);
     } else {
-      hidePauseScreen();
+      this.gameWin = true;
+      this.drawGameEnd();
+      this.map.currentLevelIndex = 0;
     }
   }
-});
 
-startButton.addEventListener("click", () => {
-  menu.classList.add("hidden");
-  canvas.classList.remove("hidden");
-  startGame();
-});
+  showLevelModal(level) {
+    const levelModal = document.createElement("div");
+    levelModal.id = "level-modal";
 
-exitButton.addEventListener("click", () => {
-  window.close();
-});
+    const levelText = document.createElement("div");
+    levelText.className = "level-text";
+    levelText.innerText = `Level ${level}`;
 
-restartButton.addEventListener("click", () => {
-  resetGame();
-  startGame();
-});
+    const continueButton = document.createElement("button");
+    continueButton.className = "continue-button";
+    continueButton.innerText = "Continue";
 
-menuButton.addEventListener("click", () => {
-  resetGame();
-  textDiv.classList.add("hidden");
-  canvas.classList.add("hidden");
-  menu.classList.remove("hidden");
-});
+    continueButton.addEventListener("click", () => {
+      levelModal.remove();
+      this.startGame();
+    });
 
-function startGame() {
-  clearInterval(mainLoop);
-  gameRunning = true;
-  map.setCanvasSize(canvas);
-  mainLoop = setInterval(gameLoop, fps);
-}
+    levelModal.appendChild(levelText);
+    levelModal.appendChild(continueButton);
 
-function resetGame() {
-  clearInterval(mainLoop);
-  gameOver = false;
-  gameWin = false;
-  textDiv.classList.add("hidden");
-
-  map.resetMap();
-  pacman.reset();
-  reinitializeEnemies();
-}
-
-function showPauseScreen() {
-  const pauseOverlay = document.createElement("div");
-  pauseOverlay.id = "pause-overlay";
-
-  const pauseText = document.createElement("div");
-  pauseText.className = "pause-text";
-  pauseText.innerText = "Paused";
-
-  const continueText = document.createElement("div");
-  continueText.className = "continue-text";
-  continueText.innerText = "To continue, press 'P'";
-
-  const continueButton = document.createElement("button");
-  continueButton.className = "continue-button";
-  continueButton.innerText = "Continue";
-  continueButton.addEventListener("click", () => {
-    paused = false;
-    hidePauseScreen();
-  });
-
-  pauseOverlay.appendChild(pauseText);
-  pauseOverlay.appendChild(continueText);
-  pauseOverlay.appendChild(continueButton);
-
-  document.body.appendChild(pauseOverlay);
-}
-
-function hidePauseScreen() {
-  const pauseOverlay = document.getElementById("pause-overlay");
-  if (pauseOverlay) {
-    pauseOverlay.remove();
+    document.body.appendChild(levelModal);
   }
-}
 
-function nextLevel() {
-  if (map.currentLevelIndex + 1 < map.levels.length) {
-    map.nextLevel();
-    pacman.reset();
-    reinitializeEnemies();
-    showLevelModal(map.currentLevelIndex + 1);
-  } else {
-    gameWin = true;
-    map.currentLevelIndex = 0;
-    drawGameEnd();
-  }
-}
+  gameLoop() {
+    if (this.paused) return;
 
-function reinitializeEnemies() {
-  enemies.length = 0;
-  const newEnemies = map.getEnemies(speed);
-  newEnemies.forEach((enemy) => enemies.push(enemy));
-}
-
-function showLevelModal(level) {
-  const levelModal = document.createElement("div");
-  levelModal.id = "level-modal";
-
-  const levelText = document.createElement("div");
-  levelText.className = "level-text";
-  levelText.innerText = `Level ${level}`;
-
-  const continueButton = document.createElement("button");
-  continueButton.className = "continue-button";
-  continueButton.innerText = "Continue";
-
-  continueButton.addEventListener("click", () => {
-    levelModal.remove();
-    startGame();
-  });
-
-  continueButton.addEventListener("mouseover", () => {
-    continueButton.style.backgroundColor = "#0056b3";
-  });
-
-  continueButton.addEventListener("mouseout", () => {
-    continueButton.style.backgroundColor = "#007bff";
-  });
-
-  levelModal.appendChild(levelText);
-  levelModal.appendChild(continueButton);
-
-  document.body.appendChild(levelModal);
-}
-
-function gameLoop() {
-  if (paused) return;
-
-  map.draw(ctx);
-  drawGameEnd();
-  pacman.draw(ctx, enemies, pause());
-  enemies.forEach((enemy) => enemy.draw(ctx, pause(), pacman));
-  checkGameOver();
-  checkGameWin();
-}
-
-function pause() {
-  return !pacman.firstMove || gameOver || gameWin;
-}
-
-function checkGameOver() {
-  if (!gameOver) {
-    gameOver = enemies.some(
-      (enemy) => !pacman.powerDotActive && enemy.isCollision(pacman)
+    this.map.draw(this.ctx);
+    this.drawGameEnd();
+    this.pacman.draw(this.ctx, this.enemies, this.pause());
+    this.enemies.forEach((enemy) =>
+      enemy.draw(this.ctx, this.pause(), this.pacman)
     );
-    if (gameOver) {
-      drawGameEnd();
+    this.checkGameOver();
+    this.checkGameWin();
+  }
+
+  pause() {
+    return !this.pacman.firstMove || this.gameOver || this.gameWin;
+  }
+
+  checkGameOver() {
+    if (!this.gameOver) {
+      this.gameOver = this.enemies.some(
+        (enemy) => !this.pacman.powerDotActive && enemy.isCollision(this.pacman)
+      );
+      if (this.gameOver) {
+        this.drawGameEnd();
+      }
+    }
+  }
+
+  checkGameWin() {
+    if (!this.gameWin && this.map.win()) {
+      this.nextLevel();
+    }
+  }
+
+  drawGameEnd() {
+    if (this.gameOver || this.gameWin) {
+      this.text.innerText = this.gameWin
+        ? this.map.currentLevelIndex + 1 >= this.map.levels.length
+          ? "You Win the Game!"
+          : "Level Complete!"
+        : "Game Over";
+      this.textDiv.classList.remove("hidden");
+      clearInterval(this.mainLoop);
     }
   }
 }
 
-function checkGameWin() {
-  if (!gameWin && map.win()) {
-    nextLevel();
-  }
-}
-
-function drawGameEnd() {
-  if (gameOver || gameWin) {
-    text.innerText = gameWin
-      ? map.currentLevelIndex + 1 >= map.levels.length
-        ? "You Win the Game!"
-        : "Level Complete!"
-      : "Game Over";
-    textDiv.classList.remove("hidden");
-    clearInterval(mainLoop);
-  }
-}
+const game = new Game();

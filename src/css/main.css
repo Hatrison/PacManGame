@@ -17,6 +17,10 @@ canvas {
   background-color: black;
 }
 
+button:hover {
+  background-color: #0056b3 !important;
+}
+
 .menu {
   display: flex;
   flex-direction: column;
@@ -181,8 +185,4 @@ canvas {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-}
-
-.continue-button:hover {
-  background-color: #0056b3;
 }
